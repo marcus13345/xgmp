@@ -14,11 +14,38 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 			if (part === '\x02') {
 				this.buffer = '';
 			} else if (part === '\x03') {
-				try {
-					let cmd = JSON.parse(this.buffer);
-					this.emit('message', cmd);
-				} catch(e) {
-					console.log('Command Parse Error:\n', this.buffer);
+
+				switch (this.buffer[0]) {
+					case '0x04': {
+						//ping
+						try {
+							let cmd = JSON.parse(this.buffer.splice(0,1));
+							this.emit('ping', cmd);
+						} catch (e) {
+							console.log('Command Parse Error:\n', this.buffer);
+						}
+					}
+					case '0x05': {
+						//query
+						try {
+							let cmd = JSON.parse(this.buffer.splice(0,1));
+							this.emit('query', cmd);
+						} catch (e) {
+							console.log('Command Parse Error:\n', this.buffer);
+						}
+					}
+					case '0x06': {
+						//reply
+						try {
+							let cmd = JSON.parse(this.buffer.splice(0,1));
+							this.emit('reply', cmd);
+						} catch (e) {
+							console.log('Command Parse Error:\n', this.buffer);
+						}
+					}
+					default: {
+						console.log(`message type of undefined type ${this.buffer[0].toHex()}`)
+					}
 				}
 			} else {
 				this.buffer += part;
