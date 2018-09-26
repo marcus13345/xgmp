@@ -32,3 +32,5 @@ protocolAdapter.on('error' , errorObject =>{
 	console.dir("error >>", errorObject);
 });
 
+protocolAdapter.on("data", data=>console.dir("data >>", data));
+

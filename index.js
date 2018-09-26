@@ -23,8 +23,8 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 			if (part === '\x02') {
 				this.buffer = '';
 			} else if (part === '\x03') {
-
 				this.parseMessageType(this.buffer);
+				this.dispatchData(this.buffer);
 			} else {
 				this.buffer += part;
 			}
@@ -72,6 +72,10 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				this.emit('error', { type: "E_NO_MESSAGE_TYPE", data: type+message });
 			}
 		}
+	}
+
+	dispatchData(data) {
+		this.emit('data', data);
 	}
 
 
