@@ -40,8 +40,9 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				try {
 					let cmd = JSON.parse(message);
 					this.emit('ping', cmd);
+					this.emit('message', { 'type': "ping", 'cmd': cmd });
 				} catch (e) {
-					this.emit('error', { type: "E_COMMAND_PARSE_ERROR", data: message });
+					this.emit('error', { 'type': "E_COMMAND_PARSE_ERROR", 'data': message, 'error':e });
 				}
 				break;
 			}
@@ -50,8 +51,9 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				try {
 					let cmd = JSON.parse(message);
 					this.emit('query', cmd);
+					this.emit('message', { 'type': "query", 'cmd': cmd });
 				} catch (e) {
-					this.emit('error', { type: "E_COMMAND_PARSE_ERROR", data: message });
+					this.emit('error', { 'type': "E_COMMAND_PARSE_ERROR", 'data': message });
 				}
 				break;
 			}
@@ -62,14 +64,16 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 					let [err, cmd] = message.split('\x00');
 					cmd = JSON.parse(cmd);
 					if (err === '') err = null;
-					this.emit('reply', { 'err': err, 'com': cmd });
+					this.emit('reply', { 'err': err, 'cmd': cmd });
+					this.emit('message', { 'type': "reply", 'err': err, 'cmd': cmd });
+
 				} catch (e) {
-					this.emit('error', { type: "E_COMMAND_PARSE_ERROR", data: message });
+					this.emit('error', { 'type': "E_COMMAND_PARSE_ERROR", 'data': message });
 				}
 				break;
 			}
 			default: {
-				this.emit('error', { type: "E_NO_MESSAGE_TYPE", data: type+message });
+				this.emit('error', { 'type': "E_NO_MESSAGE_TYPE", 'data': type + message });
 			}
 		}
 	}
