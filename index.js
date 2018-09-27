@@ -16,7 +16,7 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 		if ('write' in obj && obj.write.writable) {
 			this._writeStream = obj.write;
 			obj.write.on('close', this.close.bind(this));
-			this._STATE = "OPEN";
+			this._STATE = 'OPEN';
 		}
 	}
 
@@ -36,7 +36,7 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 
 	async data(data) {
 		if (this._STATE === 'CLOSED') {
-			this.error({ 'type': "E_STREAM_CLOSED", 'data': data });
+			this.error({ 'type': 'E_STREAM_CLOSED', 'data': data });
 			return;
 		}
 		this.emit('data', data);
@@ -61,9 +61,9 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				try {
 					let cmd = JSON.parse(message);
 					this.emit('ping', cmd);
-					this.sendMessage({ 'type': "ping", 'cmd': cmd });
+					this.sendMessage({ 'type': 'ping', 'cmd': cmd });
 				} catch (e) {
-					this.error({ 'type': "E_COMMAND_PARSE_ERROR", 'data': message, 'error': e });
+					this.error({ 'type': 'E_COMMAND_PARSE_ERROR', 'data': message, 'error': e });
 				}
 				break;
 			}
@@ -72,9 +72,9 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				try {
 					let cmd = JSON.parse(message);
 					this.emit('query', cmd);
-					this.sendMessage({ 'type': "query", 'cmd': cmd });
+					this.sendMessage({ 'type': 'query', 'cmd': cmd });
 				} catch (e) {
-					this.error({ 'type': "E_COMMAND_PARSE_ERROR", 'data': message });
+					this.error({ 'type': 'E_COMMAND_PARSE_ERROR', 'data': message });
 				}
 				break;
 			}
@@ -86,26 +86,26 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 					cmd = JSON.parse(cmd);
 					if (err === '') err = null;
 					this.emit('reply', { 'err': err, 'cmd': cmd });
-					this.sendMessage({ 'type': "reply", 'err': err, 'cmd': cmd });
+					this.sendMessage({ 'type': 'reply', 'err': err, 'cmd': cmd });
 
 				} catch (e) {
-					this.error({ 'type': "E_COMMAND_PARSE_ERROR", 'data': message });
+					this.error({ 'type': 'E_COMMAND_PARSE_ERROR', 'data': message });
 				}
 				break;
 			}
 			default: {
-				this.error({ 'type': "E_NO_MESSAGE_TYPE", 'data': type + message });
+				this.error({ 'type': 'E_NO_MESSAGE_TYPE', 'data': type + message });
 			}
 		}
 	}
 
 	reply(err, obj) {
 		if (this._STATE === 'CLOSED') {
-			this.error({ 'type': "E_STREAM_CLOSED", 'data': data });
+			this.error({ 'type': 'E_STREAM_CLOSED'});
 			return;
 		}
 		let buffer;
-		if ((err === null) || (err === false)) buffer = "";
+		if ((err === null) || (err === false)) buffer = '';
 		else {
 			try {
 				buffer = err.toString();
@@ -116,7 +116,7 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 				}
 				catch (e) {
 					buffer = 'E_ERROR_PARSE_ERROR';
-					this.error({ type: "E_ERROR_PARSE_ERROR", data: err });
+					this.error({ type: 'E_ERROR_PARSE_ERROR', data: err });
 				}
 			}
 		}
@@ -125,7 +125,7 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 
 	ping(obj) {
 		if (this._STATE === 'CLOSED') {
-			this.error({ 'type': "E_STREAM_CLOSED", 'data': data });
+			this.error({ 'type': 'E_STREAM_CLOSED'});
 			return;
 		}
 		this._writeStream.write(`\x02p${JSON.stringify(obj)}\x03`);
@@ -133,7 +133,7 @@ module.exports.StreamParser = class StreamParser extends EventEmitter {
 
 	query(obj) {
 		if (this._STATE === 'CLOSED') {
-			this.error({ 'type': "E_STREAM_CLOSED", 'data': data });
+			this.error({ 'type': 'E_STREAM_CLOSED'});
 			return;
 		}
 		this._writeStream.write(`\x02q${JSON.stringify(obj)}\x03`);
