@@ -11,7 +11,7 @@ const {StreamParser} = require('xgmp');
 // a data event.
 let protocolAdapter = new StreamParser({read:process.stdin});
 
-protocolAdapter.on('reply', (err,cmd) => {
+protocolAdapter.on('reply', ({err,cmd}) => {
 	if (err) console.log(err);
 	else console.dir("reply >>", cmd);
 });
@@ -24,7 +24,7 @@ protocolAdapter.on('query', (cmd) => {
 	console.dir("query >>", cmd);
 });
 
-protocolAdapter.on('error' , errorObject =>{
+protocolAdapter.on('error' , (errorObject) =>{
 	console.dir("error >>", errorObject);
 });
 
