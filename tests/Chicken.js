@@ -1,4 +1,4 @@
-const { StreamParser } = require('../index.js');
+const { StreamParser } = require('xgmp');
 
 let protocolAdapter = new StreamParser({
 	write: process.stdout

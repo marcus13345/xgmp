@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const { StreamParser } = require('../index.js');
+const { StreamParser } = require('xgmp');
 const which = require('which');
 const path = require('path');
 
